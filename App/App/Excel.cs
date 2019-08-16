@@ -35,6 +35,9 @@ namespace App
             ExcelWorkbook xlWorkBook = xlApp.Workbook;
             ExcelWorksheet xlWorkSheet = xlWorkBook.Worksheets.First();
 
+            xlWorkSheet.Column(4).Style.Numberformat.Format = "HH:mm";
+            xlWorkSheet.Column(5).Style.Numberformat.Format = "HH:mm";
+
             int rowCount = xlWorkSheet.Dimension.End.Row;
             int colCount = xlWorkSheet.Dimension.End.Column;
 
@@ -45,22 +48,34 @@ namespace App
                 Directory.CreateDirectory(StringPath.PathFolder + "\\" + StringPath.dbName);
 
             string test = Convert.ToDateTime(xlWorkSheet.Cells[3, 7].Value).ToString("yyyyMMdd");
+            DateTime TimeIn, TimeOut;
+            TimeSpan PeriodTime;
+            int i_TimeData;
 
             for (int i = 6; i <= rowCount && xlWorkSheet.Cells[i, 2].Text != ""; i++)
             {
-                for (int j = 1; j <= colCount; j++)
+                string FileName = StringPath.PathFile + xlWorkSheet.Cells[i, 2].Text + ".txt";
+                TimeIn = Convert.ToDateTime(xlWorkSheet.Cells[i, 4].Value);
+                TimeOut = Convert.ToDateTime(xlWorkSheet.Cells[i, 5].Value);
+                PeriodTime = TimeOut - TimeIn;
+                i_TimeData = (int)PeriodTime.TotalHours;
+
+                if (!File.Exists(FileName))
                 {
-                    string FileName = StringPath.PathFile + xlWorkSheet.Cells[i, 2].Text + ".txt";
                     FileInfo fi = new FileInfo(FileName);
-                    if (fi.Exists)
-                    {
-                        fi.Delete();
-                    }
                     using (StreamWriter sw = fi.CreateText())
                     {
-                        sw.WriteLine(test);
+                        sw.WriteLine(test + "\t" + i_TimeData);
                     }
                 }
+                else
+                {
+                    using (StreamWriter sw = new StreamWriter(FileName, true))
+                    {
+                        sw.WriteLine(test + "\t" + i_TimeData + "\t" + "Lastline");
+                    }
+                }
+                
             }
         }
     }
