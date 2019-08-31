@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace App
+{
+    class Rules
+    {
+        public Rules()
+        {
+
+        }
+
+        public bool Rule1(int NumberOfLine, string[] AllFile)
+        {
+            return true;
+        }
+
+        public bool Rule2(int NumberOfLine, string[] AllFile)
+        {
+            if (NumberOfLine > 2)
+            {
+                string[] LastLine = AllFile[NumberOfLine - 1].Split('\t');
+                string[] LastLinePrevious = AllFile[NumberOfLine - 2].Split('\t');
+                int TimeInToday = int.Parse(LastLine[5]);
+                int TimeOutDayBefore = int.Parse(LastLinePrevious[6]);
+                if (TimeInToday < TimeOutDayBefore)
+                    TimeInToday += 24;
+                int TimeOffBetweenShift = TimeInToday - TimeOutDayBefore;
+                if (TimeOffBetweenShift < 12)
+                    return false;
+            }
+            return true;
+        }
+
+        public bool Rule3(int NumberOfLine, string[] AllFile)
+        {
+            if (NumberOfLine > 1)
+            {
+                string[] LastLine = AllFile[NumberOfLine - 1].Split('\t');
+                int TimeSpan = int.Parse(LastLine[3]);
+                if (TimeSpan > 12)
+                    return false;
+            }
+            return true;
+        }
+
+        public bool Rule4(int NumberOfLine, string[] AllFile)
+        {
+            return true;
+        }
+
+        public bool Rule5_1(int NumberOfLine, string[] AllFile)
+        {
+            int TotalEx = 0;
+            int index = NumberOfLine - 1;
+            string[] CurrentLine = AllFile[index].Split('\t');
+            int GetMonth = int.Parse(CurrentLine[1]);
+            int GetCurrentMonth = GetMonth;
+            while(GetMonth == GetCurrentMonth)
+            {
+                CurrentLine = AllFile[index].Split('\t');
+                GetCurrentMonth = int.Parse(CurrentLine[1]);
+                TotalEx += int.Parse(CurrentLine[7]);
+                index--;
+                if (index == 0)
+                    break;
+            }
+            if (TotalEx > 30)
+                return false;
+            return true;
+        }
+
+        public bool Rule5_2(int NumberOfLine, string[] AllFile)
+        {
+            int TotalEx = 0;
+            int index = NumberOfLine - 1;
+            string[] CurrentLine = AllFile[index].Split('\t');
+            int GetCurrentYear = int.Parse(CurrentLine[2]);
+            while (GetCurrentYear == int.Parse(CurrentLine[2]))
+            {
+                CurrentLine = AllFile[index].Split('\t');
+                TotalEx += int.Parse(CurrentLine[7]);
+                index--;
+                if (index == 0)
+                    break;
+            }
+            if (TotalEx > 200)
+                return false;
+            return true;
+        }
+
+        public bool Rule6(int NumberOfLine, string[] AllFile)
+        {
+            if (NumberOfLine > 6)
+            {
+                int ToTalHourWorking = 0;
+                for (int i = NumberOfLine - 1; i >= NumberOfLine - 6; i--)
+                {
+                    string[] CurrentLine = AllFile[i].Split('\t');
+                    int TimeSpan = int.Parse(CurrentLine[3]);
+                    ToTalHourWorking += TimeSpan;
+                }
+                if (ToTalHourWorking > 60)
+                    return false;
+            }
+            return true;
+        }
+    }
+}

@@ -9,8 +9,9 @@ namespace App
 {
     class StringPath
     {
-        public static string dbName = "Database";
-        public static string PathFolder = Directory.GetParent(Directory.GetCurrentDirectory()).ToString();
-        public static string PathFile = PathFolder + "\\" + dbName + "\\";
+        public static string dbName = "Database";                                                          // Ten database
+        public static string PathFolder = Directory.GetCurrentDirectory();                                 // Duong dan den folder 
+        public static string PathFile = PathFolder + "\\" + dbName + "\\";                                 // Duong dan file trong database
+        public static string PathReport = PathFolder + "\\Report\\";                                       // Duong dan file report
     }
 }

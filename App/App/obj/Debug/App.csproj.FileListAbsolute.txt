@@ -10,4 +10,5 @@ D:\Work\WindowApp\xepcacongnhan\App\App\bin\Debug\EPPlus.xml
 D:\Work\WindowApp\xepcacongnhan\App\App\obj\Debug\App.csproj.CopyComplete
 D:\Work\WindowApp\xepcacongnhan\App\App\obj\Debug\App.exe
 D:\Work\WindowApp\xepcacongnhan\App\App\obj\Debug\App.pdb
-D:\Work\WindowApp\xepcacongnhan\App\App\obj\Debug\App.Form1.resources
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Debug\App.form_Setting.resources
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Debug\App.Form_Main.resources

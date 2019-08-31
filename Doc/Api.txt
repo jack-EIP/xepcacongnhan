@@ -1,0 +1,215 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using System.Windows.Forms;
+using System.Collections;
+
+
+namespace App
+{
+    class Api
+    {
+        public static string OpenDialogFile()
+        {
+            OpenFileDialog fdlg = new OpenFileDialog();
+            fdlg.Title = "Excel File Dialog";
+            fdlg.InitialDirectory = @"D:\Extra";
+            //fdlg.InitialDirectory = @"D:\Extra\TestRule5";
+            //fdlg.InitialDirectory = @"D:\Work\WindowApp\xepcacongnhan\Doc";
+            fdlg.Filter = "All files (*.*)|*.*|All files (*.*)|*.*";
+            fdlg.FilterIndex = 2;
+            fdlg.RestoreDirectory = true;
+            if (fdlg.ShowDialog() == DialogResult.OK)
+            {
+                return fdlg.FileName;
+            }
+            return null;
+        }
+
+        public static string GetShift(Object obj_timeIn, Object obj_timeOut)
+        {
+            DateTime TimeIn = Convert.ToDateTime(obj_timeIn);
+            DateTime TimeOut = Convert.ToDateTime(obj_timeOut);
+            if (TimeIn.Hour == 6 || TimeOut.Hour == 14)
+                return "1";
+            else if (TimeIn.Hour == 14 || TimeOut.Hour == 22)
+                return "2";
+            else if (TimeIn.Hour == 22 || TimeOut.Hour == 6)
+                return "3";
+            return "0";
+        }
+
+        public static string GetShift_int(int int_timeIn, int int_timeOut)
+        {
+            //DateTime TimeIn = Convert.ToDateTime(obj_timeIn);
+            //DateTime TimeOut = Convert.ToDateTime(obj_timeOut);
+            if (int_timeIn == 6 || int_timeOut == 14)
+                return "1";
+            else if (int_timeIn == 14 || int_timeOut == 22)
+                return "2";
+            else if (int_timeIn == 22 || int_timeOut == 6)
+                return "3";
+            return "0";
+        }
+
+        public static String GetTimeSpan(Object obj_timeIn, Object obj_timeOut)
+        {
+            DateTime TimeIn = Convert.ToDateTime(obj_timeIn);
+            DateTime TimeOut = Convert.ToDateTime(obj_timeOut);
+            if (DateTime.Compare(TimeIn, TimeOut) > 0)
+                TimeOut = TimeOut.AddHours(24);
+            TimeSpan timespan = TimeOut - TimeIn;
+            string s_timespan = timespan.TotalHours.ToString();
+            return s_timespan;
+        }
+
+        public static int GetTimeSpan_int(int int_timeIn, int int_timeOut)
+        {
+            //DateTime TimeIn = Convert.ToDateTime(obj_timeIn);
+            //DateTime TimeOut = Convert.ToDateTime(obj_timeOut);
+            if (int_timeIn > int_timeOut)
+                int_timeOut += 24;
+            int int_timespan = int_timeOut - int_timeIn;
+            return int_timespan;
+        }
+
+        public static int GetEx(int int_timeIn, int int_timeOut)
+        {
+            int Ex = GetTimeSpan_int(int_timeIn, int_timeOut) - 8;
+            if (Ex < 0)
+                return 0;
+            return Ex;
+        }
+
+        public static bool CheckDateWrittenToFile(string FileName, int Day, int Month, int Year)
+        {
+            string[] line = File.ReadAllLines(FileName);
+            string[] DateFromFile;
+            for (int i = 1; i < line.Length; i++)
+            {
+                DateFromFile = line[i].Split('\t');
+                if (Day == int.Parse(DateFromFile[0]) && Month == int.Parse(DateFromFile[1]) && Year == int.Parse(DateFromFile[2]))
+                    return false;
+            }
+            return true;
+        }
+
+        public static bool validation(string FileName)
+        {
+            Rules rules = new Rules();
+            int Lines = File.ReadAllLines(FileName).Count();
+            string[] AllLine = File.ReadAllLines(FileName);
+            if (rules.Rule1(Lines, AllLine)
+                && rules.Rule2(Lines, AllLine)
+                && rules.Rule3(Lines, AllLine)
+                && rules.Rule4(Lines, AllLine)
+                && rules.Rule5_1(Lines, AllLine)
+                && rules.Rule5_2(Lines, AllLine)
+                && rules.Rule6(Lines, AllLine)
+               )
+                return true;
+            return false;
+        }
+
+        public static int SearchEmployeeID(ExcelWorksheet xlWorkSheet, string EmployeeID)
+        {
+            int rowCount = xlWorkSheet.Dimension.End.Row;
+            int i;
+            string[] GetEmployeeID = EmployeeID.Split('.');
+            for (i = 6; i < rowCount; i++)
+            {
+                if (String.Equals(GetEmployeeID[0], xlWorkSheet.Cells[i, 2].Text))
+                    return i;
+            }
+            return 0;
+        }
+
+        public static bool IsDirectoryEmpty(string path)
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
+        }
+
+        public static string GetIdFromFileName(string FileName)
+        {
+            string[] id = FileName.Split('.');
+            return id[0];
+        }
+
+        public static void UpdateFirstWorkData(string FileName, int WorkingDay, int WorkingMonth, int WorkingYear, int TimeIn, int TimeOut, string Name)
+        {
+            using (StreamWriter sw = File.CreateText(FileName))
+            {
+                sw.WriteLine(
+                        "D" + "\t"
+                        + "M" + "\t"
+                        + "Y" + "\t"
+                        + "Tol" + "\t"
+                        + "Sft" + "\t"
+                        + "In" + "\t"
+                        + "Out" + "\t"
+                        + "Ex" + "\t"
+                        + Name
+                );
+                sw.WriteLine(
+                        WorkingDay + "\t"
+                        + WorkingMonth + "\t"
+                        + WorkingYear + "\t"
+                        + Api.GetTimeSpan_int(TimeIn, TimeOut) + "\t"
+                        + Api.GetShift_int(TimeIn, TimeOut) + "\t"
+                        + TimeIn + "\t"
+                        + TimeOut + "\t"
+                        + Api.GetEx(TimeIn, TimeOut)
+                        );
+            }
+        }
+
+        public static void UpdateWorkData(string FileName, int WorkingDay, int WorkingMonth, int WorkingYear, int TimeIn, int TimeOut)
+        {
+            using (StreamWriter sw = new StreamWriter(FileName, true))
+            {
+                sw.WriteLine(
+                        WorkingDay + "\t"
+                        + WorkingMonth + "\t"
+                        + WorkingYear + "\t"
+                        + Api.GetTimeSpan_int(TimeIn, TimeOut) + "\t"
+                        + Api.GetShift_int(TimeIn, TimeOut) + "\t"
+                        + TimeIn + "\t"
+                        + TimeOut + "\t"
+                        + Api.GetEx(TimeIn, TimeOut)
+                    );
+            }
+        }
+
+        public static void UpdateNonWorkingData(string FileName, int WorkingDay, int WorkingMonth, int WorkingYear)
+        {
+            using (StreamWriter sw = new StreamWriter(FileName, true))
+            {
+                sw.WriteLine(
+                WorkingDay + "\t"
+                + WorkingMonth + "\t"
+                + WorkingYear + "\t"
+                + 0 + "\t"
+                + 0 + "\t"
+                + 0 + "\t"
+                + 0 + "\t"
+                + 0
+                );
+            }
+        }
+
+        public static int GetDayWeek(int WorkingDay, int WorkingMonth, int WorkingYear)
+        {
+            return ((WorkingDay + ((153 * (WorkingMonth + 12 * ((14 - WorkingMonth) / 12) - 3) + 2) / 5) +
+                  (365 * (WorkingYear + 4800 - ((14 - WorkingMonth) / 12))) +
+                  ((WorkingYear + 4800 - ((14 - WorkingMonth) / 12)) / 4) -
+                  ((WorkingYear + 4800 - ((14 - WorkingMonth) / 12)) / 100) +
+                  ((WorkingYear + 4800 - ((14 - WorkingMonth) / 12)) / 400) - 32045) % 7) + 2;
+        }
+
+    }
+}

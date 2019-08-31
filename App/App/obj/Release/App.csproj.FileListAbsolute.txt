@@ -1,0 +1,14 @@
+D:\Work\WindowApp\xepcacongnhan\App\App\bin\Release\App.exe.config
+D:\Work\WindowApp\xepcacongnhan\App\App\bin\Release\App.exe
+D:\Work\WindowApp\xepcacongnhan\App\App\bin\Release\App.pdb
+D:\Work\WindowApp\xepcacongnhan\App\App\bin\Release\EPPlus.dll
+D:\Work\WindowApp\xepcacongnhan\App\App\bin\Release\EPPlus.xml
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.csprojAssemblyReference.cache
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.Form_Main.resources
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.Form_Setting.resources
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.Properties.Resources.resources
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.csproj.GenerateResource.cache
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.csproj.CoreCompileInputs.cache
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.csproj.CopyComplete
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.exe
+D:\Work\WindowApp\xepcacongnhan\App\App\obj\Release\App.pdb
